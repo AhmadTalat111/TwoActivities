@@ -7,26 +7,89 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
-private static final String Tag = MainActivity.class.getSimpleName();
+private static final String LOG_Tag = MainActivity.class.getSimpleName();
 public static final String Extra_Message = "com.example.android.twoactivities.extra.MESSAGE";
 private EditText mMessageEditText;
 public static final int TEXT_REQUEST = 1;
 private TextView mReplyHeadTextView;
 private TextView mReplyTextView;
     @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if(mReplyHeadTextView.getVisibility() == View.VISIBLE){
+            outState.putBoolean("reply_visible", true);
+            outState.putString("reply_text", mReplyTextView.getText().toString());
+        }
+    }
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Log.d(LOG_Tag, "-----");
+        Log.d(LOG_Tag, "onCreate");
         mMessageEditText = findViewById(R.id.editText_main);
         mReplyHeadTextView = findViewById(R.id.text_header_reply);
         mReplyTextView = findViewById(R.id.text_message_reply);
+        if (savedInstanceState != null){
+            boolean isVisible = savedInstanceState.getBoolean("reply_visible");
+            if (isVisible){
+                mReplyHeadTextView.setVisibility(View.VISIBLE);
+                mReplyTextView.setText(savedInstanceState.getString("reply_text"));
+                mReplyTextView.setVisibility(View.VISIBLE);
+            }
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.d(LOG_Tag, "onStart");
+
+    }
+
+
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.d(LOG_Tag, "onPause");
+
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        Log.d(LOG_Tag, "onRestart");
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d(LOG_Tag, "onResume");
+
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.d(LOG_Tag, "onStop");
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d(LOG_Tag, "onDestroy");
+
     }
 
     public void launchSecondActivity(View view) {
-        Log.d(Tag, "The button is clicked");
+        Log.d(LOG_Tag, "The button is clicked");
         Intent intent = new Intent(this, SecondActivity.class);
         String message = mMessageEditText.getText().toString();
         intent.putExtra(Extra_Message, message);
